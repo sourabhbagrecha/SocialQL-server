@@ -1,29 +1,35 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const { ApolloServer, PubSub } = require("apollo-server-express");
-const UserModule = require("./modules/user");
-const AuthModule = require("./modules/authentication");
-const FriendModule = require("./modules/friend");
-const MessageModule = require("./modules/message");
+const { ApolloServer } = require("apollo-server-express");
+const http = require("http");
+
+const modules = require("./modules");
+const context = require("./utils/contextConfig");
+const subscriptions = require("./utils/subscriptionConfig");
 
 const app = express();
+
 const PORT = process.env.PORT || 5000;
+const MONGODB_URI = "mongodb://localhost:27017/whatsapp-grahql";
 
 const server = new ApolloServer({
-  modules: [UserModule, AuthModule, FriendModule, MessageModule],
-  context: (request) => request,
+  modules,
+  context,
+  subscriptions,
 });
 
 server.applyMiddleware({ app });
+const httpServer = http.createServer(app);
+server.installSubscriptionHandlers(httpServer);
 
 mongoose
-  .connect("mongodb://localhost:27017/whatsapp-grahql", {
+  .connect(MONGODB_URI, {
     useUnifiedTopology: true,
     useNewUrlParser: true,
   })
   .then((_) => {
-    console.log("connected!");
-    app.listen(PORT, () => {
+    console.log("DB Connected!");
+    httpServer.listen(PORT, () => {
       console.log(`Listening on ${PORT}!`);
     });
   })

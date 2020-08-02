@@ -2,8 +2,9 @@ const jwt = require("jsonwebtoken");
 const AUTH_SECRET = "Learning Subscription";
 
 const getUserId = (context) => {
-  const token = context.req.get("Authorization").replace("Bearer ", "");
-  if (token) {
+  const Authorization = context.req.get("Authorization");
+  if (Authorization) {
+    const token = Authorization.replace("Bearer ", "")
     const { userId } = jwt.verify(token, AUTH_SECRET);
     return userId;
   }

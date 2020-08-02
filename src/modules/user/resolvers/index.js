@@ -1,14 +1,8 @@
+const User = require("../../../models/User");
+
 module.exports = {
-  Query: {
-    user: (root, { id }) => {
-      return {
-        _id: id,
-        username: 'jhon'
-      };
-    }
+  User: async (parent, args) => {
+    console.log({ parent, args });
+    return await User.findById(parent.id);
   },
-  User: {
-    id: user => user._id,
-    username: user => user.username
-  }
 };

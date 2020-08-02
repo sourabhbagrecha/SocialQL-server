@@ -8,7 +8,7 @@ module.exports = gql`
     sendMessage(body: String!, user: String!): String!
   }
   extend type Subscription {
-    messageAdded: Message!
+    messageAdded(friend: ID!): Message!
   }
   type Message {
     _id: ID!
