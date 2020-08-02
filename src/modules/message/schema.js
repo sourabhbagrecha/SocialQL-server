@@ -2,10 +2,10 @@ const { gql } = require("apollo-server-express");
 
 module.exports = gql`
   type Query {
-    chat(friend: ID!): [Message!]
+    chat(user: ID!): [Message!]
   }
   type Mutation {
-    sendMessage(body: String!, friend: String!): String!
+    sendMessage(body: String!, user: String!): String!
   }
   type Message {
     _id: ID!

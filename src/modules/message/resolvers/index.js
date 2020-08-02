@@ -5,33 +5,47 @@ const Friend = require("../../../models/Friend");
 module.exports = {
   Query: {
     chat: async (root, args, context) => {
-      const { friend } = args;
-      const user = getUserId(context);
-      const isAuthorized = await Friend.findOne({
-        _id: friend,
+      const { user } = args;
+      const currentUser = getUserId(context);
+      const friend = await Friend.findOne({
         status: 2,
-        $or: [{ requester: user }, { recipient: user }],
+        $and: [
+          {
+            $or: [{ requester: user }, { recipient: user }],
+          },
+          {
+            $or: [{ requester: currentUser }, { recipient: currentUser }],
+          },
+        ],
       }).lean();
-      if (!isAuthorized) throw new Error("Unauthorized");
-      const messages = await Message.find({ friend }, { body: 1, user: 1, createdAt: 1 }).lean();
+      if (!friend) throw new Error("Unauthorized");
+      const messages = await Message.find(
+        { friend: friend._id },
+        { body: 1, user: 1, createdAt: 1 }
+      ).lean();
       return messages;
-    }
+    },
   },
   Mutation: {
     sendMessage: async (root, args, context) => {
-      const { body, friend } = args;
-      const user = getUserId(context);
-      const isAuthorized = await Friend.findOne({
-        _id: friend,
+      const { body, user } = args;
+      const currentUser = getUserId(context);
+      const friend = await Friend.findOne({
         status: 2,
-        $or: [{ requester: user }, { recipient: user }],
+        $and: [
+          {
+            $or: [{ requester: user }, { recipient: user }],
+          },
+          {
+            $or: [{ requester: currentUser }, { recipient: currentUser }],
+          },
+        ],
       }).lean();
-      console.log({ isAuthorized, user });
-      if (!isAuthorized) throw new Error("Unauthorized");
+      if (!friend) throw new Error("Unauthorized");
       const message = await Message.create({
         body,
-        friend,
-        user,
+        friend: friend._id,
+        user: currentUser,
       });
       console.log(message);
       return `Message sent successfully with id ${message._id}`;
