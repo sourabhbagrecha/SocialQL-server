@@ -12,10 +12,10 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@graphql-modules/core": "^0.7.17",
     "apollo-server-express": "^2.16.0",
     "bcryptjs": "^2.4.3",
     "express": "^4.17.1",
+    "express-graphql": "^0.11.0",
     "graphql": "^15.3.0",
     "graphql-tools": "^6.0.15",
     "jsonwebtoken": "^8.5.1",

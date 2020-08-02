@@ -1,8 +1,7 @@
 const schema = require("./schema");
 const resolvers = require("./resolvers");
-const { GraphQLModule } = require("@graphql-modules/core");
 
-module.exports = new GraphQLModule({
+module.exports = ({
   typeDefs: schema,
   resolvers,
   context: rootContext => rootContext,

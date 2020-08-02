@@ -1,10 +1,10 @@
 const { gql } = require("apollo-server-express");
 
 module.exports = gql`
-  type Query {
+  extend type Query {
     friends: [User!]!
   }
-  type Mutation {
+  extend type Mutation {
     friendRequest(userId: ID!): String!
     friendAccept(userId: ID!): String!
   }

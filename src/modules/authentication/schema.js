@@ -6,7 +6,7 @@ type AuthPayload {
   userId: String!
 }
 
-type Mutation {
+extend type Mutation {
   login(email: String!, password: String!): AuthPayload!
   signup(email: String!, password: String!, name: String!): AuthPayload!
 }

@@ -51,4 +51,9 @@ module.exports = {
       return `Message sent successfully with id ${message._id}`;
     },
   },
+  Subscription: {
+    messageAdded: {
+      subscribe: (root, args, { injector }) => injector.get(PubSub).asyncIterator(["MESSAGE_ADDED"])
+    }
+  },
 };

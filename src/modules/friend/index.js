@@ -1,11 +1,9 @@
 const schema = require("./schema");
 const resolvers = require("./resolvers");
 const UserModule = require("../user");
-const { GraphQLModule } = require("@graphql-modules/core");
 
-module.exports = new GraphQLModule({
+module.exports = ({
   typeDefs: schema,
   resolvers: resolvers,
-  imports: [UserModule],
   context: rootContext => rootContext,
 });

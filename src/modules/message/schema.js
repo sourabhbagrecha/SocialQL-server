@@ -1,11 +1,14 @@
 const { gql } = require("apollo-server-express");
 
 module.exports = gql`
-  type Query {
+  extend type Query {
     chat(user: ID!): [Message!]
   }
-  type Mutation {
+  extend type Mutation {
     sendMessage(body: String!, user: String!): String!
+  }
+  extend type Subscription {
+    messageAdded: Message!
   }
   type Message {
     _id: ID!
