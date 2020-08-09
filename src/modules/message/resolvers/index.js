@@ -29,7 +29,7 @@ module.exports = {
     },
   },
   Mutation: {
-    sendMessage: async (root, { body, user }, context) => {
+    sendMessage: async (root, { body, user, token }, context) => {
       const { pubsub } = context;
       const currentUser = getUserId(context);
       const friend = await Friend.findOne({
@@ -49,19 +49,19 @@ module.exports = {
         friend: friend._id,
         user: currentUser,
       });
-      console.log(message);
       pubsub.publish(MESSAGE_ADDED, { messageAdded: message });
-      return `Message sent successfully with id ${message._id}`;
+      return {
+        token,
+        message,
+      };
     },
   },
   Subscription: {
     messageAdded: {
       subscribe: withFilter(
         (_, __, { pubsub }) => pubsub.asyncIterator([MESSAGE_ADDED]),
-        (payload, variables) => {
-          console.log({ payload, variables, testPayload: payload.messageAdded.friend.toString(), testVariable: variables.friend });
-          return payload.messageAdded.friend.toString() === variables.friend;
-        }          
+        (payload, variables) =>
+          payload.messageAdded.friend.toString() === variables.friend
       ),
     },
   },

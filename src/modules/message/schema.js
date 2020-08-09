@@ -5,10 +5,14 @@ module.exports = gql`
     chat(user: ID!): [Message!]
   }
   extend type Mutation {
-    sendMessage(body: String!, user: String!): String!
+    sendMessage(body: String!, user: ID!, token: ID!): MessageAck
   }
   extend type Subscription {
     messageAdded(friend: ID!): Message!
+  }
+  type MessageAck {
+    token: ID!
+    message: Message!
   }
   type Message {
     _id: ID!

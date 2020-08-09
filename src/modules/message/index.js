@@ -4,5 +4,4 @@ const resolvers = require("./resolvers");
 module.exports = ({
   typeDefs: schema,
   resolvers,
-  context: rootContext => rootContext,
 });
