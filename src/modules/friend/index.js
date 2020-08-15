@@ -5,5 +5,4 @@ const UserModule = require("../user");
 module.exports = ({
   typeDefs: schema,
   resolvers: resolvers,
-  context: rootContext => rootContext,
 });

@@ -7,22 +7,12 @@ const MESSAGE_ADDED = "MESSAGE_ADDED";
 module.exports = {
   Query: {
     chat: async (root, args, context) => {
-      const { user } = args;
+      const { friend } = args;
       const currentUser = getUserId(context);
-      const friend = await Friend.findOne({
-        status: 2,
-        $and: [
-          {
-            $or: [{ requester: user }, { recipient: user }],
-          },
-          {
-            $or: [{ requester: currentUser }, { recipient: currentUser }],
-          },
-        ],
-      }).lean();
-      if (!friend) throw new Error("Unauthorized");
+      const friendFound = await Friend.findById(friend, { _id: 1 }).lean();
+      if (!friendFound) throw new Error("Unauthorized");
       const messages = await Message.find(
-        { friend: friend._id },
+        { friend: friendFound._id },
         { body: 1, user: 1, createdAt: 1 }
       ).lean();
       return messages;

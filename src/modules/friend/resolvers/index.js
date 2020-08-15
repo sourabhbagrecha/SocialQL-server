@@ -1,28 +1,25 @@
 const Friend = require("../../../models/Friend");
 const { getUserId } = require("../../../middlewares/auth");
 const User = require("../../../models/User");
+const util = require("util");
 const {
   Types: { ObjectId },
 } = require("mongoose");
-const getFriendRequestsUsers = require("../utils/getFriendRequestsUsers");
+const {
+  getFriendRequestsUsers,
+  findFriendsWithMetaUser,
+  findFriendSuggestions,
+} = require("../utils/friendAggregation");
 
 module.exports = {
   Query: {
     friends: async (root, args, context) => {
-      const user = getUserId(context);
-      const fetchFriends = await Friend.find({
-        $and: [
-          { $or: [{ requester: user }, { recipient: user }] },
-          { status: 2 },
-        ],
-      }).lean();
-      const friendsList = fetchFriends.map((friend) =>
-        friend.requester.toString() === user
-          ? friend.recipient
-          : friend.requester
-      );
-      const users = await User.find({ _id: { $in: friendsList } });
-      return users;
+      const currentUser = getUserId(context);
+      return findFriendsWithMetaUser(currentUser);
+    },
+    friendSuggestions: async (root, args, context) => {
+      const currentUser = getUserId(context);
+      return findFriendSuggestions(currentUser);
     },
     requestsSent: async (_, __, context) => {
       const currentUser = getUserId(context);
@@ -31,7 +28,7 @@ module.exports = {
     requestsReceived: async (_, __, context) => {
       const currentUser = getUserId(context);
       return getFriendRequestsUsers(currentUser, 0, "received");
-    }
+    },
   },
   Mutation: {
     friendRequest: async (root, args, context) => {
