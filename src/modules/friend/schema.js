@@ -10,6 +10,7 @@ module.exports = gql`
   extend type Mutation {
     friendRequest(userId: ID!): String!
     friendAccept(userId: ID!): String!
+    cancelFriendRequest(userId: ID!): String!
   }
   type Friend {
     user: User!

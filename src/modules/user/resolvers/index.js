@@ -53,7 +53,6 @@ module.exports = {
             },
           },
         ]);
-        console.log(users);
         return users;
       } catch (error) {
         console.log(error);
